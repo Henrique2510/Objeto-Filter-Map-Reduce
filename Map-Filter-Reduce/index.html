@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aula Interativa: Map, Filter e Reduce em JavaScript</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .code-block {
+            background-color: #1e293b;
+            color: #f8fafc;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        .highlight-keyword { color: #f43f5e; font-weight: bold; }
+        .highlight-function { color: #38bdf8; }
+        .highlight-string { color: #a3e635; }
+        .highlight-number { color: #fbbf24; }
+        .highlight-comment { color: #94a3b8; font-style: italic; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans antialiased min-h-screen flex flex-col">
+
+    <!-- Header Navigation -->
+    <header class="bg-indigo-600 text-white shadow-lg sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 py-4 flex flex-wrap justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <i class="fa-brands fa-js text-yellow-400 text-3xl"></i>
+                <h1 class="text-xl font-bold tracking-wide">JS Masterclass: <span class="font-normal text-indigo-200">Map, Filter & Reduce</span></h1>
+            </div>
+            <nav class="mt-2 sm:mt-0 flex space-x-2 sm:space-x-4 text-sm font-medium">
+                <a href="#introducao" class="hover:bg-indigo-700 px-3 py-1.5 rounded transition">Início</a>
+                <a href="#map" class="hover:bg-indigo-700 px-3 py-1.5 rounded transition">.map()</a>
+                <a href="#filter" class="hover:bg-indigo-700 px-3 py-1.5 rounded transition">.filter()</a>
+                <a href="#reduce" class="hover:bg-indigo-700 px-3 py-1.5 rounded transition">.reduce()</a>
+                <a href="#encadeamento" class="hover:bg-indigo-700 px-3 py-1.5 rounded transition">Encadeamento</a>
+                <a href="#exercicios" class="bg-yellow-400 text-indigo-950 font-bold hover:bg-yellow-300 px-3 py-1.5 rounded transition">Exercícios</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 py-8 flex-grow grid grid-cols-1 lg:grid-cols-4 gap-8">
+
+        <!-- Sidebar / Menu Rápido -->
+        <aside class="lg:col-span-1 hidden lg:block">
+            <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 sticky top-24 space-y-4">
+                <h3 class="font-bold text-slate-900 border-b pb-2 flex items-center gap-2">
+                    <i class="fa-solid fa-list-check text-indigo-600"></i> Conteúdo da Aula
+                </h3>
+                <ul class="space-y-2 text-sm text-slate-600">
+                    <li><a href="#introducao" class="hover:text-indigo-600 flex items-center gap-2"><i class="fa-solid fa-chevron-right text-xs"></i> Paradigma Funcional</a></li>
+                    <li><a href="#map" class="hover:text-indigo-600 flex items-center gap-2"><i class="fa-solid fa-chevron-right text-xs"></i> 1. Método Array.map()</a></li>
+                    <li><a href="#filter" class="hover:text-indigo-600 flex items-center gap-2"><i class="fa-solid fa-chevron-right text-xs"></i> 2. Método Array.filter()</a></li>
+                    <li><a href="#reduce" class="hover:text-indigo-600 flex items-center gap-2"><i class="fa-solid fa-chevron-right text-xs"></i> 3. Método Array.reduce()</a></li>
+                    <li><a href="#encadeamento" class="hover:text-indigo-600 flex items-center gap-2"><i class="fa-solid fa-chevron-right text-xs"></i> 4. Combinando Métodos</a></li>
+                    <li><a href="#exercicios" class="hover:text-indigo-600 flex items-center gap-2"><i class="fa-solid fa-chevron-right text-xs"></i> 5. Desafios Práticos</a></li>
+                </ul>
+            </div>
+        </aside>
+
+        <!-- Dynamic Content Area -->
+        <div class="lg:col-span-3 space-y-12">
+
+            <!-- INTRODUÇÃO -->
+            <section id="introducao" class="bg-white p-6 sm:p-8 rounded-2xl shadow-sm border border-slate-200 space-y-4">
+                <div class="inline-block px-3 py-1 bg-indigo-100 text-indigo-700 text-xs font-semibold rounded-full uppercase tracking-wider">Conceitos Fundamentais</div>
+                <h2 class="text-3xl font-extrabold text-slate-900">Por que aprender Map, Filter e Reduce?</h2>
+                <p class="text-slate-600 leading-relaxed">
+                    Antes do ES6 (ECMAScript 2015), iterar sobre arrays exigia loops tradicionais como <code class="bg-slate-100 text-pink-600 px-1 py-0.5 rounded">for</code> ou <code class="bg-slate-100 text-pink-600 px-1 py-0.5 rounded">for...of</code>. Os métodos <code class="text-indigo-600 font-bold">map</code>, <code class="text-indigo-600 font-bold">filter</code> e <code class="text-indigo-600 font-bold">reduce</code> introduziram um estilo mais **declarativo** e **funcional** para manipular coleções de dados em JavaScript.
+                </p>
+                
+                <div class="grid md:grid-cols-3 gap-4 pt-4">
+                    <div class="p-4 bg-emerald-50 rounded-xl border border-emerald-100">
+                        <i class="fa-solid fa-wand-magic-sparkles text-emerald-600 text-xl mb-2"></i>
+                        <h4 class="font-bold text-slate-800">Imutabilidade</h4>
+                        <p class="text-xs text-slate-600 mt-1">Eles não alteram o array original. Sempre retornam novos dados ou valores.</p>
+                    </div>
+                    <div class="p-4 bg-blue-50 rounded-xl border border-blue-100">
+                        <i class="fa-solid fa-code text-blue-600 text-xl mb-2"></i>
+                        <h4 class="font-bold text-slate-800">Código Limpo</h4>
+                        <p class="text-xs text-slate-600 mt-1">Eliminam variáveis auxiliares e contadores de controle manualmente criados.</p>
+                    </div>
+                    <div class="p-4 bg-purple-50 rounded-xl border border-purple-100">
+                        <i class="fa-solid fa-link text-purple-600 text-xl mb-2"></i>
+                        <h4 class="font-bold text-slate-800">Encadeamento</h4>
+                        <p class="text-xs text-slate-600 mt-1">Permitem combinar transformações de forma contínua e expressiva.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SEÇÃO MAP -->
+            <section id="map" class="bg-white p-6 sm:p-8 rounded-2xl shadow-sm border border-slate-200 space-y-6">
+                <div class="flex justify-between items-start flex-wrap gap-2">
+                    <div>
+                        <span class="inline-block px-3 py-1 bg-amber-100 text-amber-800 text-xs font-semibold rounded-full uppercase tracking-wider mb-2">Transformação 1 para 1</span>
+                        <h2 class="text-2xl font-bold text-slate-900">1. Array.prototype.map()</h2>
+                    </div>
+                    <span class="text-xs font-mono bg-slate-100 text-slate-600 px-2 py-1 rounded">Retorna: Novo Array (mesmo tamanho)</span>
+                </div>
+
+                <p class="text-slate-600 leading-relaxed">
+                    O método <strong>map()</strong> percorre cada elemento do array e aplica uma função de transformação em cada um deles, retornando um <strong>novo array</strong> com os resultados. O número de itens no array resultante é sempre igual ao array original.
+                </p>
+
+                <!-- Analogia Visual Map -->
+                <div class="bg-amber-50/60 p-4 rounded-xl border border-amber-200 text-center space-y-2">
+                    <p class="text-xs font-bold text-amber-900 uppercase">Analogia do Map</p>
+                    <div class="flex justify-center items-center gap-2 text-xl sm:text-2xl font-semibold">
+                        <span>[ 🌽, 🥔, 🐔 ]</span>
+                        <span class="text-slate-400">.map( <i class="fa-solid fa-fire text-orange-500"></i> )</span>
+                        <span class="text-slate-400">➔</span>
+                        <span>[ 🍿, 🍟, 🍳 ]</span>
+                    </div>
+                </div>
+
+                <!-- Sintaxe -->
+                <div class="space-y-2">
+                    <h4 class="font-bold text-slate-800 text-sm">Sintaxe:</h4>
+                    <div class="code-block p-4 rounded-xl text-sm overflow-x-auto">
+                        <span class="highlight-keyword">const</span> novoArray = arrayOriginal.<span class="highlight-function">map</span>((elemento, indice, arrayCompleto) => {<br>
+                        &nbsp;&nbsp;<span class="highlight-keyword">return</span> elemento * <span class="highlight-number">2</span>;<br>
+                        });
+                    </div>
+                </div>
+
+                <!-- Exemplo Prático Executável -->
+                <div class="border border-slate-200 rounded-xl overflow-hidden">
+                    <div class="bg-slate-100 px-4 py-2 border-b border-slate-200 flex justify-between items-center">
+                        <span class="text-xs font-bold text-slate-700">Exemplo Prático: Converter Preços para Reais (BRL)</span>
+                        <button onclick="executarMap()" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs px-3 py-1 rounded font-medium flex items-center gap-1 transition">
+                            <i class="fa-solid fa-play text-xs"></i> Executar
+                        </button>
+                    </div>
+                    <div class="p-4 grid md:grid-cols-2 gap-4 bg-slate-900">
+                        <div>
+                            <p class="text-slate-400 text-xs mb-2">Código JavaScript:</p>
+                            <pre class="text-xs text-slate-200 font-mono overflow-x-auto">
+<span class="highlight-keyword">const</span> produtos = [
+  { nome: <span class="highlight-string">'Teclado'</span>, preco: <span class="highlight-number">150</span> },
+  { nome: <span class="highlight-string">'Mouse'</span>, preco: <span class="highlight-number">80</span> },
+  { nome: <span class="highlight-string">'Monitor'</span>, preco: <span class="highlight-number">900</span> }
+];
+
+<span class="highlight-comment">// Transformando preços com desconto de 10%</span>
+<span class="highlight-keyword">const</span> comDesconto = produtos.<span class="highlight-function">map</span>(item => ({
+  ...item,
+  precoFormatado: <span class="highlight-string">`R$ ${(item.preco * 0.9).toFixed(2)}`</span>
+}));</pre>
+                        </div>
+                        <div>
+                            <p class="text-slate-400 text-xs mb-2">Saída do Console:</p>
+                            <pre id="output-map" class="text-xs font-mono text-emerald-400 bg-black/50 p-3 rounded h-40 overflow-y-auto">Clique em "Executar" para ver o resultado...</pre>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SEÇÃO FILTER -->
+            <section id="filter" class="bg-white p-6 sm:p-8 rounded-2xl shadow-sm border border-slate-200 space-y-6">
+                <div class="flex justify-between items-start flex-wrap gap-2">
+                    <div>
+                        <span class="inline-block px-3 py-1 bg-emerald-100 text-emerald-800 text-xs font-semibold rounded-full uppercase tracking-wider mb-2">Seleção Condicional</span>
+                        <h2 class="text-2xl font-bold text-slate-900">2. Array.prototype.filter()</h2>
+                    </div>
+                    <span class="text-xs font-mono bg-slate-100 text-slate-600 px-2 py-1 rounded">Retorna: Novo Array (igual ou menor)</span>
+                </div>
+
+                <p class="text-slate-600 leading-relaxed">
+                    O método <strong>filter()</strong> cria um novo array contendo apenas os elementos do array original que atendem a uma determinada condição (retornam <code class="text-emerald-600 font-bold">true</code> na função de callback).
+                </p>
+
+                <!-- Analogia Visual Filter -->
+                <div class="bg-emerald-50/60 p-4 rounded-xl border border-emerald-200 text-center space-y-2">
+                    <p class="text-xs font-bold text-emerald-900 uppercase">Analogia do Filter</p>
+                    <div class="flex justify-center items-center gap-2 text-xl sm:text-2xl font-semibold">
+                        <span>[ 🍿, 🍟, 🍳, 🍎 ]</span>
+                        <span class="text-slate-400">.filter( <i class="fa-solid fa-filter text-emerald-600"></i> é_vegetal )</span>
+                        <span class="text-slate-400">➔</span>
+                        <span>[ 🍟, 🍎 ]</span>
+                    </div>
+                </div>
+
+                <!-- Sintaxe -->
+                <div class="space-y-2">
+                    <h4 class="font-bold text-slate-800 text-sm">Sintaxe:</h4>
+                    <div class="code-block p-4 rounded-xl text-sm overflow-x-auto">
+                        <span class="highlight-keyword">const</span> novoArrayFiltrado = arrayOriginal.<span class="highlight-function">filter</span>((elemento) => {<br>
+                        &nbsp;&nbsp;<span class="highlight-keyword">return</span> elemento >= <span class="highlight-number">18</span>; <span class="highlight-comment">// Retorna true para manter, false para descartar</span><br>
+                        });
+                    </div>
+                </div>
+
+                <!-- Exemplo Prático Executável -->
+                <div class="border border-slate-200 rounded-xl overflow-hidden">
+                    <div class="bg-slate-100 px-4 py-2 border-b border-slate-200 flex justify-between items-center">
+                        <span class="text-xs font-bold text-slate-700">Exemplo Prático: Filtrar Alunos Aprovados</span>
+                        <button onclick="executarFilter()" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs px-3 py-1 rounded font-medium flex items-center gap-1 transition">
+                            <i class="fa-solid fa-play text-xs"></i> Executar
+                        </button>
+                    </div>
+                    <div class="p-4 grid md:grid-cols-2 gap-4 bg-slate-900">
+                        <div>
+                            <p class="text-slate-400 text-xs mb-2">Código JavaScript:</p>
+                            <pre class="text-xs text-slate-200 font-mono overflow-x-auto">
+<span class="highlight-keyword">const</span> alunos = [
+  { nome: <span class="highlight-string">'Ana'</span>, nota: <span class="highlight-number">8.5</span> },
+  { nome: <span class="highlight-string">'Carlos'</span>, nota: <span class="highlight-number">5.0</span> },
+  { nome: <span class="highlight-string">'Beatriz'</span>, nota: <span class="highlight-number">7.0</span> },
+  { nome: <span class="highlight-string">'Daniel'</span>, nota: <span class="highlight-number">4.5</span> }
+];
+
+<span class="highlight-comment">// Filtrar apenas alunos aprovados (nota >= 7)</span>
+<span class="highlight-keyword">const</span> aprovados = alunos.<span class="highlight-function">filter</span>(aluno => aluno.nota >= <span class="highlight-number">7</span>);</pre>
+                        </div>
+                        <div>
+                            <p class="text-slate-400 text-xs mb-2">Saída do Console:</p>
+                            <pre id="output-filter" class="text-xs font-mono text-emerald-400 bg-black/50 p-3 rounded h-40 overflow-y-auto">Clique em "Executar" para ver o resultado...</pre>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SEÇÃO REDUCE -->
+            <section id="reduce" class="bg-white p-6 sm:p-8 rounded-2xl shadow-sm border border-slate-200 space-y-6">
+                <div class="flex justify-between items-start flex-wrap gap-2">
+                    <div>
+                        <span class="inline-block px-3 py-1 bg-purple-100 text-purple-800 text-xs font-semibold rounded-full uppercase tracking-wider mb-2">Agregação / Acúmulo</span>
+                        <h2 class="text-2xl font-bold text-slate-900">3. Array.prototype.reduce()</h2>
+                    </div>
+                    <span class="text-xs font-mono bg-slate-100 text-slate-600 px-2 py-1 rounded">Retorna: Valor único (Número, Objeto, Array, etc)</span>
+                </div>
+
+                <p class="text-slate-600 leading-relaxed">
+                    O método <strong>reduce()</strong> executa uma função "redutora" para cada elemento do array, resultando em um <strong>único valor de retorno</strong>. É extremamente versátil: serve para somar totais, agrupar objetos por categoria, encontrar maiores/menores valores e muito mais.
+                </p>
+
+                <!-- Analogia Visual Reduce -->
+                <div class="bg-purple-50/60 p-4 rounded-xl border border-purple-200 text-center space-y-2">
+                    <p class="text-xs font-bold text-purple-900 uppercase">Analogia do Reduce</p>
+                    <div class="flex justify-center items-center gap-2 text-xl sm:text-2xl font-semibold">
+                        <span>[ 🍿, 🍟, 🍳 ]</span>
+                        <span class="text-slate-400">.reduce( <i class="fa-solid fa-box text-purple-600"></i> digestão )</span>
+                        <span class="text-slate-400">➔</span>
+                        <span>💩</span>
+                    </div>
+                </div>
+
+                <!-- Sintaxe -->
+                <div class="space-y-2">
+                    <h4 class="font-bold text-slate-800 text-sm">Sintaxe e Parâmetros:</h4>
+                    <div class="code-block p-4 rounded-xl text-sm overflow-x-auto">
+                        <span class="highlight-keyword">const</span> resultado = array.<span class="highlight-function">reduce</span>((acumulador, itemAtual) => {<br>
+                        &nbsp;&nbsp;<span class="highlight-keyword">return</span> acumulador + itemAtual;<br>
+                        }, <span class="highlight-number">valorInicial</span>); <span class="highlight-comment">// Importante definir o valorInicial!</span>
+                    </div>
+                </div>
+
+                <!-- Exemplo Prático Executável -->
+                <div class="border border-slate-200 rounded-xl overflow-hidden">
+                    <div class="bg-slate-100 px-4 py-2 border-b border-slate-200 flex justify-between items-center">
+                        <span class="text-xs font-bold text-slate-700">Exemplo Prático: Calcular o valor total de um carrinho de compras</span>
+                        <button onclick="executarReduce()" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs px-3 py-1 rounded font-medium flex items-center gap-1 transition">
+                            <i class="fa-solid fa-play text-xs"></i> Executar
+                        </button>
+                    </div>
+                    <div class="p-4 grid md:grid-cols-2 gap-4 bg-slate-900">
+                        <div>
+                            <p class="text-slate-400 text-xs mb-2">Código JavaScript:</p>
+                            <pre class="text-xs text-slate-200 font-mono overflow-x-auto">
+<span class="highlight-keyword">const</span> carrinho = [
+  { item: <span class="highlight-string">'Livro'</span>, preco: <span class="highlight-number">30</span> },
+  { item: <span class="highlight-string">'Caneta'</span>, preco: <span class="highlight-number">5</span> },
+  { item: <span class="highlight-string">'Mochila'</span>, preco: <span class="highlight-number">120</span> }
+];
+
+<span class="highlight-comment">// Somando os preços (Acumulador inicia em 0)</span>
+<span class="highlight-keyword">const</span> total = carrinho.<span class="highlight-function">reduce</span>((acc, produto) => {
+  <span class="highlight-keyword">return</span> acc + produto.preco;
+}, <span class="highlight-number">0</span>);</pre>
+                        </div>
+                        <div>
+                            <p class="text-slate-400 text-xs mb-2">Saída do Console:</p>
+                            <pre id="output-reduce" class="text-xs font-mono text-emerald-400 bg-black/50 p-3 rounded h-40 overflow-y-auto">Clique em "Executar" para ver o resultado...</pre>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ENCADEAMENTO (CHAINING) -->
+            <section id="encadeamento" class="bg-white p-6 sm:p-8 rounded-2xl shadow-sm border border-slate-200 space-y-6">
+                <div class="inline-block px-3 py-1 bg-indigo-100 text-indigo-800 text-xs font-semibold rounded-full uppercase tracking-wider">Poder da Programação Funcional</div>
+                <h2 class="text-2xl font-bold text-slate-900">4. Combinando Map, Filter e Reduce (Chaining)</h2>
+                <p class="text-slate-600 leading-relaxed">
+                    Como <code class="text-indigo-600 font-bold">filter</code> e <code class="text-indigo-600 font-bold">map</code> retornam novos arrays, podemos encadeá-los sequencialmente para resolver problemas complexos com poucas linhas de código altamente legíveis.
+                </p>
+
+                <div class="bg-indigo-900 text-white p-5 rounded-xl space-y-4">
+                    <h4 class="font-bold text-sm text-indigo-200 flex items-center gap-2">
+                        <i class="fa-solid fa-cart-shopping"></i> Cenário de e-Commerce:
+                    </h4>
+                    <p class="text-xs text-slate-300">
+                        1. Filtrar apenas produtos da categoria "Eletrônicos".<br>
+                        2. Aplicar um imposto de 10% no preço dos eletrônicos seleccionados.<br>
+                        3. Calcular o faturamento total previsto desses itens.
+                    </p>
+
+                    <div class="code-block p-4 rounded-lg text-xs overflow-x-auto border border-indigo-700">
+                        <span class="highlight-keyword">const</span> vendas = [<br>
+                        &nbsp;&nbsp;{ nome: <span class="highlight-string">'TV'</span>, cat: <span class="highlight-string">'Eletrônicos'</span>, preco: <span class="highlight-number">2000</span> },<br>
+                        &nbsp;&nbsp;{ nome: <span class="highlight-string">'Camisa'</span>, cat: <span class="highlight-string">'Vestuário'</span>, preco: <span class="highlight-number">100</span> },<br>
+                        &nbsp;&nbsp;{ nome: <span class="highlight-string">'Fone'</span>, cat: <span class="highlight-string">'Eletrônicos'</span>, preco: <span class="highlight-number">300</span> }<br>
+                        ];<br><br>
+                        <span class="highlight-keyword">const</span> totalFaturamentoEletronicos = vendas<br>
+                        &nbsp;&nbsp;.<span class="highlight-function">filter</span>(item => item.cat === <span class="highlight-string">'Eletrônicos'</span>) <span class="highlight-comment">// [TV, Fone]</span><br>
+                        &nbsp;&nbsp;.<span class="highlight-function">map</span>(item => item.preco * <span class="highlight-number">1.10</span>) <span class="highlight-comment">// [2200, 330]</span><br>
+                        &nbsp;&nbsp;.<span class="highlight-function">reduce</span>((acc, valor) => acc + valor, <span class="highlight-number">0</span>); <span class="highlight-comment">// 2530</span>
+                    </div>
+
+                    <button onclick="executarCombo()" class="w-full bg-yellow-400 hover:bg-yellow-300 text-indigo-950 font-bold text-xs py-2 rounded transition">
+                        Executar Pipeline Completo
+                    </button>
+                    <div id="output-combo" class="text-xs font-mono text-yellow-300 bg-black/40 p-3 rounded hidden"></div>
+                </div>
+            </section>
+
+            <!-- EXERCÍCIOS INTERATIVOS -->
+            <section id="exercicios" class="bg-white p-6 sm:p-8 rounded-2xl shadow-sm border border-slate-200 space-y-6">
+                <div>
+                    <span class="inline-block px-3 py-1 bg-yellow-100 text-yellow-800 text-xs font-semibold rounded-full uppercase tracking-wider mb-2">Prática Recomendada</span>
+                    <h2 class="text-2xl font-bold text-slate-900">5. Exercícios de Fixação</h2>
+                    <p class="text-slate-600 text-sm">Tente resolver mentalmente ou no seu editor e confira a solução clicando no botão.</p>
+                </div>
+
+                <div class="space-y-4">
+                    <!-- Exercício 1 -->
+                    <div class="border border-slate-200 rounded-xl p-4 bg-slate-50 space-y-2">
+                        <div class="flex justify-between items-center">
+                            <span class="font-bold text-sm text-slate-800">Exercício 1: Dobrar valores com .map()</span>
+                            <span class="text-xs bg-slate-200 px-2 py-0.5 rounded text-slate-700">Fácil</span>
+                        </div>
+                        <p class="text-xs text-slate-600">Dado o array <code class="bg-slate-200 px-1 font-mono">[1, 4, 9, 16]</code>, crie um novo array com a raiz quadrada de cada número (Dica: utilize <code class="text-indigo-600">Math.sqrt</code>).</p>
+                        <details class="text-xs">
+                            <summary class="cursor-pointer text-indigo-600 font-semibold hover:underline">Ver Solução</summary>
+                            <pre class="mt-2 p-3 bg-slate-900 text-slate-200 font-mono rounded overflow-x-auto">
+const numeros = [1, 4, 9, 16];
+const raizes = numeros.map(num => Math.sqrt(num));
+console.log(raizes); // [1, 2, 3, 4]</pre>
+                        </details>
+                    </div>
+
+                    <!-- Exercício 2 -->
+                    <div class="border border-slate-200 rounded-xl p-4 bg-slate-50 space-y-2">
+                        <div class="flex justify-between items-center">
+                            <span class="font-bold text-sm text-slate-800">Exercício 2: Filtrar pares com .filter()</span>
+                            <span class="text-xs bg-slate-200 px-2 py-0.5 rounded text-slate-700">Fácil</span>
+                        </div>
+                        <p class="text-xs text-slate-600">Dado o array <code class="bg-slate-200 px-1 font-mono">[12, 5, 8, 130, 44]</code>, retorne apenas os números maiores ou iguais a 10.</p>
+                        <details class="text-xs">
+                            <summary class="cursor-pointer text-indigo-600 font-semibold hover:underline">Ver Solução</summary>
+                            <pre class="mt-2 p-3 bg-slate-900 text-slate-200 font-mono rounded overflow-x-auto">
+const numeros = [12, 5, 8, 130, 44];
+const maioresQueDez = numeros.filter(num => num >= 10);
+console.log(maioresQueDez); // [12, 130, 44]</pre>
+                        </details>
+                    </div>
+
+                    <!-- Exercício 3 -->
+                    <div class="border border-slate-200 rounded-xl p-4 bg-slate-50 space-y-2">
+                        <div class="flex justify-between items-center">
+                            <span class="font-bold text-sm text-slate-800">Exercício 3: Agrupamento com .reduce()</span>
+                            <span class="text-xs bg-purple-100 text-purple-800 px-2 py-0.5 rounded font-medium">Intermediário</span>
+                        </div>
+                        <p class="text-xs text-slate-600">Dado uma lista de palavras <code class="bg-slate-200 px-1 font-mono">['maçã', 'banana', 'maçã', 'laranja', 'banana', 'maçã']</code>, conte a frequência de cada fruta utilizando <code class="text-indigo-600">reduce</code>.</p>
+                        <details class="text-xs">
+                            <summary class="cursor-pointer text-indigo-600 font-semibold hover:underline">Ver Solução</summary>
+                            <pre class="mt-2 p-3 bg-slate-900 text-slate-200 font-mono rounded overflow-x-auto">
+const frutas = ['maçã', 'banana', 'maçã', 'laranja', 'banana', 'maçã'];
+
+const contagem = frutas.reduce((acc, fruta) => {
+  acc[fruta] = (acc[fruta] || 0) + 1;
+  return acc;
+}, {});
+
+console.log(contagem); // { maçã: 3, banana: 2, laranja: 1 }</pre>
+                        </details>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-400 text-center py-6 text-sm border-t border-slate-800">
+        <p>Material Didático - JavaScript Moderno (ES6+)</p>
+    </footer>
+
+    <!-- Interactive Scripts -->
+    <script>
+        function executarMap() {
+            const produtos = [
+                { nome: 'Teclado', preco: 150 },
+                { nome: 'Mouse', preco: 80 },
+                { nome: 'Monitor', preco: 900 }
+            ];
+
+            const comDesconto = produtos.map(item => ({
+                ...item,
+                precoFormatado: `R$ ${(item.preco * 0.9).toFixed(2)}`
+            }));
+
+            document.getElementById('output-map').innerText = JSON.stringify(comDesconto, null, 2);
+        }
+
+        function executarFilter() {
+            const alunos = [
+                { nome: 'Ana', nota: 8.5 },
+                { nome: 'Carlos', nota: 5.0 },
+                { nome: 'Beatriz', nota: 7.0 },
+                { nome: 'Daniel', nota: 4.5 }
+            ];
+
+            const aprovados = alunos.filter(aluno => aluno.nota >= 7);
+
+            document.getElementById('output-filter').innerText = JSON.stringify(aprovados, null, 2);
+        }
+
+        function executarReduce() {
+            const carrinho = [
+                { item: 'Livro', preco: 30 },
+                { item: 'Caneta', preco: 5 },
+                { item: 'Mochila', preco: 120 }
+            ];
+
+            const total = carrinho.reduce((acc, produto) => {
+                return acc + produto.preco;
+            }, 0);
+
+            document.getElementById('output-reduce').innerText = `O valor total do carrinho é: R$ ${total.toFixed(2)}`;
+        }
+
+        function executarCombo() {
+            const vendas = [
+                { nome: 'TV', cat: 'Eletrônicos', preco: 2000 },
+                { nome: 'Camisa', cat: 'Vestuário', preco: 100 },
+                { nome: 'Fone', cat: 'Eletrônicos', preco: 300 }
+            ];
+
+            const totalFaturamentoEletronicos = vendas
+                .filter(item => item.cat === 'Eletrônicos')
+                .map(item => item.preco * 1.10)
+                .reduce((acc, valor) => acc + valor, 0);
+
+            const elem = document.getElementById('output-combo');
+            elem.classList.remove('hidden');
+            elem.innerText = `Resultado do Encadeamento:\nFaturamento total com impostos: R$ ${totalFaturamentoEletronicos.toFixed(2)}`;
+        }
+    </script>
+</body>
+</html>

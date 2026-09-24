@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aula Interativa: Objetos em JavaScript</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .code-block {
+            background-color: #1e293b;
+            color: #f8fafc;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        .highlight-keyword { color: #f43f5e; font-weight: bold; }
+        .highlight-function { color: #38bdf8; }
+        .highlight-string { color: #a3e635; }
+        .highlight-number { color: #fbbf24; }
+        .highlight-comment { color: #94a3b8; font-style: italic; }
+        .highlight-property { color: #c084fc; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans antialiased min-h-screen flex flex-col">
+
+    <!-- Header Navigation -->
+    <header class="bg-amber-600 text-white shadow-lg sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 py-4 flex flex-wrap justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <i class="fa-brands fa-js text-yellow-300 text-3xl"></i>
+                <h1 class="text-xl font-bold tracking-wide">JS Masterclass: <span class="font-normal text-amber-100">Objetos em JS</span></h1>
+            </div>
+            <nav class="mt-2 sm:mt-0 flex space-x-2 sm:space-x-4 text-sm font-medium">
+                <a href="#introducao" class="hover:bg-amber-700 px-3 py-1.5 rounded transition">Início</a>
+                <a href="#criacao-acesso" class="hover:bg-amber-700 px-3 py-1.5 rounded transition">Criação & Acesso</a>
+                <a href="#metodos-this" class="hover:bg-amber-700 px-3 py-1.5 rounded transition">Métodos & this</a>
+                <a href="#utilitarios" class="hover:bg-amber-700 px-3 py-1.5 rounded transition">Object.*</a>
+                <a href="#es6" class="hover:bg-amber-700 px-3 py-1.5 rounded transition">Desestruturação & Spread</a>
+                <a href="#exercicios" class="bg-yellow-400 text-amber-950 font-bold hover:bg-yellow-300 px-3 py-1.5 rounded transition">Exercícios</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 py-8 flex-grow grid grid-cols-1 lg:grid-cols-4 gap-8">
+
+        <!-- Sidebar / Menu Rápido -->
+        <aside class="lg:col-span-1 hidden lg:block">
+            <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 sticky top-24 space-y-4">
+                <h3 class="font-bold text-slate-900 border-b pb-2 flex items-center gap-2">
+                    <i class="fa-solid fa-list-check text-amber-600"></i> Conteúdo da Aula
+                </h3>
+                <ul class="space-y-2 text-sm text-slate-600">
+                    <li><a href="#introducao" class="hover:text-amber-600 flex items-center gap-2"><i class="fa-solid fa-chevron-right text-xs"></i> 1. O que são Objetos?</a></li>
+                    <li><a href="#criacao-acesso" class="hover:text-amber-600 flex items-center gap-2"><i class="fa-solid fa-chevron-right text-xs"></i> 2. Criação e Notações</a></li>
+                    <li><a href="#metodos-this" class="hover:text-amber-600 flex items-center gap-2"><i class="fa-solid fa-chevron-right text-xs"></i> 3. Métodos e Palavra "this"</a></li>
+                    <li><a href="#utilitarios" class="hover:text-amber-600 flex items-center gap-2"><i class="fa-solid fa-chevron-right text-xs"></i> 4. Métodos do Object</a></li>
+                    <li><a href="#es6" class="hover:text-amber-600 flex items-center gap-2"><i class="fa-solid fa-chevron-right text-xs"></i> 5. Desestruturação & Spread</a></li>
+                    <li><a href="#exercicios" class="hover:text-amber-600 flex items-center gap-2"><i class="fa-solid fa-chevron-right text-xs"></i> 6. Desafios Práticos</a></li>
+                </ul>
+            </div>
+        </aside>
+
+        <!-- Dynamic Content Area -->
+        <div class="lg:col-span-3 space-y-12">
+
+            <!-- INTRODUÇÃO -->
+            <section id="introducao" class="bg-white p-6 sm:p-8 rounded-2xl shadow-sm border border-slate-200 space-y-4">
+                <div class="inline-block px-3 py-1 bg-amber-100 text-amber-800 text-xs font-semibold rounded-full uppercase tracking-wider">Fundamentos de JS</div>
+                <h2 class="text-3xl font-extrabold text-slate-900">O que são Objetos em JavaScript?</h2>
+                <p class="text-slate-600 leading-relaxed">
+                    Em JavaScript, um <strong>Objeto</strong> é uma coleção de pares de <strong>chave: valor</strong>. Enquanto variáveis simples guardam apenas um valor por vez (ex: uma string ou número), objetos permitem agrupar dados complexos e funcionalidades relacionadas sob uma única estrutura.
+                </p>
+                
+                <div class="grid md:grid-cols-3 gap-4 pt-4">
+                    <div class="p-4 bg-amber-50 rounded-xl border border-amber-100">
+                        <i class="fa-solid fa-key text-amber-600 text-xl mb-2"></i>
+                        <h4 class="font-bold text-slate-800">Chaves (Propriedades)</h4>
+                        <p class="text-xs text-slate-600 mt-1">Identificadores (strings ou Symbols) que dão nome aos dados armazenados.</p>
+                    </div>
+                    <div class="p-4 bg-blue-50 rounded-xl border border-blue-100">
+                        <i class="fa-solid fa-database text-blue-600 text-xl mb-2"></i>
+                        <h4 class="font-bold text-slate-800">Valores Variados</h4>
+                        <p class="text-xs text-slate-600 mt-1">Podem ser números, strings, booleanos, arrays, outros objetos ou funções.</p>
+                    </div>
+                    <div class="p-4 bg-purple-50 rounded-xl border border-purple-100">
+                        <i class="fa-solid fa-cubes text-purple-600 text-xl mb-2"></i>
+                        <h4 class="font-bold text-slate-800">Tipo de Referência</h4>
+                        <p class="text-xs text-slate-600 mt-1">Objetos são alocados na memória por referência, e não por cópia de valor direto.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- CRIAÇÃO E ACESSO -->
+            <section id="criacao-acesso" class="bg-white p-6 sm:p-8 rounded-2xl shadow-sm border border-slate-200 space-y-6">
+                <div class="flex justify-between items-start flex-wrap gap-2">
+                    <div>
+                        <span class="inline-block px-3 py-1 bg-sky-100 text-sky-800 text-xs font-semibold rounded-full uppercase tracking-wider mb-2">Sintaxe e Acesso</span>
+                        <h2 class="text-2xl font-bold text-slate-900">2. Criação, Leitura e Modificação</h2>
+                    </div>
+                    <span class="text-xs font-mono bg-slate-100 text-slate-600 px-2 py-1 rounded">Notação Literal `{}`</span>
+                </div>
+
+                <p class="text-slate-600 leading-relaxed">
+                    A forma mais comum de criar objetos em JS é usando a <strong>notação literal</strong>. Para acessar e modificar propriedades, usamos a <strong>notação de ponto</strong> (`.`) ou a <strong>notação de colchetes</strong> (`[]`).
+                </p>
+
+                <!-- Comparação de Notações -->
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl space-y-2">
+                        <h4 class="font-bold text-slate-800 text-sm flex items-center gap-2">
+                            <i class="fa-solid fa-[#dot] text-indigo-600"></i> Notação de Ponto (`.`)
+                        </h4>
+                        <p class="text-xs text-slate-600">Sintaxe mais limpa e direta. Ideal quando você já sabe o nome exato da propriedade.</p>
+                        <code class="block text-xs bg-slate-900 text-slate-200 p-2 rounded">pessoa.<span class="highlight-property">nome</span> = <span class="highlight-string">'Maria'</span>;</code>
+                    </div>
+
+                    <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl space-y-2">
+                        <h4 class="font-bold text-slate-800 text-sm flex items-center gap-2">
+                            <i class="fa-solid fa-brackets-square text-amber-600"></i> Notação de Colchetes (`[]`)
+                        </h4>
+                        <p class="text-xs text-slate-600">Permite usar variáveis para acessar chaves dinâmicas ou chaves com caracteres especiais/espaços.</p>
+                        <code class="block text-xs bg-slate-900 text-slate-200 p-2 rounded">pessoa[<span class="highlight-string">'primeiro nome'</span>] ou pessoa[chaveVariavel]</code>
+                    </div>
+                </div>
+
+                <!-- Exemplo Prático Executável -->
+                <div class="border border-slate-200 rounded-xl overflow-hidden">
+                    <div class="bg-slate-100 px-4 py-2 border-b border-slate-200 flex justify-between items-center">
+                        <span class="text-xs font-bold text-slate-700">Exemplo Prático: Criando e Manipulando um Carro</span>
+                        <button onclick="executarCriacao()" class="bg-amber-600 hover:bg-amber-700 text-white text-xs px-3 py-1 rounded font-medium flex items-center gap-1 transition">
+                            <i class="fa-solid fa-play text-xs"></i> Executar
+                        </button>
+                    </div>
+                    <div class="p-4 grid md:grid-cols-2 gap-4 bg-slate-900">
+                        <div>
+                            <p class="text-slate-400 text-xs mb-2">Código JavaScript:</p>
+                            <pre class="text-xs text-slate-200 font-mono overflow-x-auto">
+<span class="highlight-keyword">const</span> carro = {
+  marca: <span class="highlight-string">'Toyota'</span>,
+  modelo: <span class="highlight-string">'Corolla'</span>,
+  ano: <span class="highlight-number">2022</span>,
+  cor: <span class="highlight-string">'Prata'</span>
+};
+
+<span class="highlight-comment">// Adicionando nova propriedade</span>
+carro.ligado = <span class="highlight-keyword">true</span>;
+
+<span class="highlight-comment">// Acesso dinâmico com colchetes</span>
+<span class="highlight-keyword">const</span> propriedadeBuscada = <span class="highlight-string">'modelo'</span>;
+<span class="highlight-keyword">const</span> valorModelo = carro[propriedadeBuscada];
+
+<span class="highlight-comment">// Deletando uma propriedade</span>
+<span class="highlight-keyword">delete</span> carro.cor;</pre>
+                        </div>
+                        <div>
+                            <p class="text-slate-400 text-xs mb-2">Saída do Console:</p>
+                            <pre id="output-criacao" class="text-xs font-mono text-emerald-400 bg-black/50 p-3 rounded h-44 overflow-y-auto">Clique em "Executar" para ver o resultado...</pre>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- MÉTODOS E THIS -->
+            <section id="metodos-this" class="bg-white p-6 sm:p-8 rounded-2xl shadow-sm border border-slate-200 space-y-6">
+                <div class="flex justify-between items-start flex-wrap gap-2">
+                    <div>
+                        <span class="inline-block px-3 py-1 bg-purple-100 text-purple-800 text-xs font-semibold rounded-full uppercase tracking-wider mb-2">Comportamento & Ações</span>
+                        <h2 class="text-2xl font-bold text-slate-900">3. Métodos e a Palavra-chave `this`</h2>
+                    </div>
+                    <span class="text-xs font-mono bg-slate-100 text-slate-600 px-2 py-1 rounded">Funções internas</span>
+                </div>
+
+                <p class="text-slate-600 leading-relaxed">
+                    Quando uma função é armazenada dentro de uma propriedade de um objeto, ela é chamada de <strong>método</strong>. Dentro do método, a palavra-chave <code class="text-purple-600 font-bold">this</code> faz referência ao próprio objeto em que o método foi chamado.
+                </p>
+
+                <!-- Alerta importante sobre Arrow Functions -->
+                <div class="bg-amber-50 border-l-4 border-amber-500 p-4 rounded-r-xl space-y-1">
+                    <h4 class="font-bold text-amber-900 text-sm flex items-center gap-2">
+                        <i class="fa-solid fa-triangle-exclamation text-amber-600"></i> Cuidado com Arrow Functions!
+                    </h4>
+                    <p class="text-xs text-amber-800">
+                        Arrow Functions (<code>() => {}</code>) <strong>não possuem seu próprio contexto de `this`</strong>. Se você definir um método usando arrow function, o `this` herdará o escopo externo (normalmente `window` ou `undefined`), e não o objeto!
+                    </p>
+                </div>
+
+                <!-- Exemplo Executável de Métodos -->
+                <div class="border border-slate-200 rounded-xl overflow-hidden">
+                    <div class="bg-slate-100 px-4 py-2 border-b border-slate-200 flex justify-between items-center">
+                        <span class="text-xs font-bold text-slate-700">Exemplo Prático: Conta Bancária com Métodos</span>
+                        <button onclick="executarMetodos()" class="bg-amber-600 hover:bg-amber-700 text-white text-xs px-3 py-1 rounded font-medium flex items-center gap-1 transition">
+                            <i class="fa-solid fa-play text-xs"></i> Executar
+                        </button>
+                    </div>
+                    <div class="p-4 grid md:grid-cols-2 gap-4 bg-slate-900">
+                        <div>
+                            <p class="text-slate-400 text-xs mb-2">Código JavaScript:</p>
+                            <pre class="text-xs text-slate-200 font-mono overflow-x-auto">
+<span class="highlight-keyword">const</span> contaBancaria = {
+  titular: <span class="highlight-string">'Ana Silva'</span>,
+  saldo: <span class="highlight-number">500</span>,
+
+  <span class="highlight-comment">// Método tradicional (sintaxe reduzida ES6)</span>
+  depositar(valor) {
+    <span class="highlight-keyword">this</span>.saldo += valor;
+    <span class="highlight-keyword">return</span> <span class="highlight-string">`Depósito de R$${valor} realizado. Novo saldo: R$${<span class="highlight-keyword">this</span>.saldo}`</span>;
+  },
+
+  exibirResumo() {
+    <span class="highlight-keyword">return</span> <span class="highlight-string">`Titular: ${<span class="highlight-keyword">this</span>.titular} | Saldo: R$${<span class="highlight-keyword">this</span>.saldo}`</span>;
+  }
+};</pre>
+                        </div>
+                        <div>
+                            <p class="text-slate-400 text-xs mb-2">Saída do Console:</p>
+                            <pre id="output-metodos" class="text-xs font-mono text-emerald-400 bg-black/50 p-3 rounded h-44 overflow-y-auto">Clique em "Executar" para ver o resultado...</pre>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- MÉTODOS UTILITÁRIOS OBJECT.* -->
+            <section id="utilitarios" class="bg-white p-6 sm:p-8 rounded-2xl shadow-sm border border-slate-200 space-y-6">
+                <div class="flex justify-between items-start flex-wrap gap-2">
+                    <div>
+                        <span class="inline-block px-3 py-1 bg-emerald-100 text-emerald-800 text-xs font-semibold rounded-full uppercase tracking-wider mb-2">Ferramentas Nativas</span>
+                        <h2 class="text-2xl font-bold text-slate-900">4. Métodos Utilitários do Construtor Object</h2>
+                    </div>
+                    <span class="text-xs font-mono bg-slate-100 text-slate-600 px-2 py-1 rounded">Object.keys(), Object.values(), Object.entries()</span>
+                </div>
+
+                <p class="text-slate-600 leading-relaxed">
+                    O JavaScript fornece vários métodos estáticos no objeto global <code class="text-amber-600 font-bold">Object</code> para inspecionar, converter e proteger objetos.
+                </p>
+
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl space-y-2">
+                        <h4 class="font-bold text-slate-800 text-sm">Inspecionando Conteúdo</h4>
+                        <ul class="text-xs text-slate-600 space-y-1">
+                            <li><code class="text-indigo-600 font-bold">Object.keys(obj)</code>: Retorna um array com todas as chaves.</li>
+                            <li><code class="text-indigo-600 font-bold">Object.values(obj)</code>: Retorna um array com todos os valores.</li>
+                            <li><code class="text-indigo-600 font-bold">Object.entries(obj)</code>: Retorna matriz de pares `[chave, valor]`.</li>
+                        </ul>
+                    </div>
+
+                    <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl space-y-2">
+                        <h4 class="font-bold text-slate-800 text-sm">Manipulação & Proteção</h4>
+                        <ul class="text-xs text-slate-600 space-y-1">
+                            <li><code class="text-indigo-600 font-bold">Object.assign(dest, src)</code>: Copia propriedades para outro objeto.</li>
+                            <li><code class="text-indigo-600 font-bold">Object.freeze(obj)</code>: Impede alterações (torna imutável).</li>
+                            <li><code class="text-indigo-600 font-bold">Object.seal(obj)</code>: Permite alterar valores, mas impede criar/deletar chaves.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Exemplo Executável Utilitários -->
+                <div class="border border-slate-200 rounded-xl overflow-hidden">
+                    <div class="bg-slate-100 px-4 py-2 border-b border-slate-200 flex justify-between items-center">
+                        <span class="text-xs font-bold text-slate-700">Exemplo Prático: Iterando e Congelando Objetos</span>
+                        <button onclick="executarUtilitarios()" class="bg-amber-600 hover:bg-amber-700 text-white text-xs px-3 py-1 rounded font-medium flex items-center gap-1 transition">
+                            <i class="fa-solid fa-play text-xs"></i> Executar
+                        </button>
+                    </div>
+                    <div class="p-4 grid md:grid-cols-2 gap-4 bg-slate-900">
+                        <div>
+                            <p class="text-slate-400 text-xs mb-2">Código JavaScript:</p>
+                            <pre class="text-xs text-slate-200 font-mono overflow-x-auto">
+<span class="highlight-keyword">const</span> usuario = { id: <span class="highlight-number">101</span>, nome: <span class="highlight-string">'Carlos'</span>, cargo: <span class="highlight-string">'Dev'</span> };
+
+<span class="highlight-keyword">const</span> chaves = Object.<span class="highlight-function">keys</span>(usuario);
+<span class="highlight-keyword">const</span> valores = Object.<span class="highlight-function">values</span>(usuario);
+<span class="highlight-keyword">const</span> pares = Object.<span class="highlight-function">entries</span>(usuario);
+
+<span class="highlight-comment">// Congelando o objeto</span>
+<span class="highlight-keyword">const</span> configuracao = Object.<span class="highlight-function">freeze</span>({ tema: <span class="highlight-string">'escuro'</span> });
+configuracao.tema = <span class="highlight-string">'claro'</span>; <span class="highlight-comment">// Não terá efeito!</span></pre>
+                        </div>
+                        <div>
+                            <p class="text-slate-400 text-xs mb-2">Saída do Console:</p>
+                            <pre id="output-utilitarios" class="text-xs font-mono text-emerald-400 bg-black/50 p-3 rounded h-44 overflow-y-auto">Clique em "Executar" para ver o resultado...</pre>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ES6+ DESESTRUTURAÇÃO E SPREAD -->
+            <section id="es6" class="bg-white p-6 sm:p-8 rounded-2xl shadow-sm border border-slate-200 space-y-6">
+                <div class="inline-block px-3 py-1 bg-indigo-100 text-indigo-800 text-xs font-semibold rounded-full uppercase tracking-wider">Recursos Modernos (ES6+)</div>
+                <h2 class="text-2xl font-bold text-slate-900">5. Desestruturação, Spread Operator & Optional Chaining</h2>
+                <p class="text-slate-600 leading-relaxed">
+                    Recursos modernos do JavaScript facilitam o trabalho com objetos no dia a dia, aumentando a legibilidade do código.
+                </p>
+
+                <div class="space-y-4">
+                    <!-- Destructuring & Spread -->
+                    <div class="bg-indigo-900 text-white p-5 rounded-xl space-y-3">
+                        <h4 class="font-bold text-sm text-indigo-200 flex items-center gap-2">
+                            <i class="fa-solid fa-bolt"></i> Desestruturação (Destructuring) & Operador Spread (`...`)
+                        </h4>
+                        <p class="text-xs text-slate-300">
+                            A desestruturação permite extrair valores de propriedades diretamente em variáveis. O operador Spread (`...`) permite clonar ou fundir objetos de forma imutável.
+                        </p>
+
+                        <div class="code-block p-4 rounded-lg text-xs overflow-x-auto border border-indigo-700">
+                            <span class="highlight-keyword">const</span> perfil = { usuarioNome: <span class="highlight-string">'Lucas'</span>, idade: <span class="highlight-number">28</span>, cidade: <span class="highlight-string">'São Paulo'</span> };<br><br>
+                            <span class="highlight-comment">// Desestruturação com valor padrão e alias (renomeação)</span><br>
+                            <span class="highlight-keyword">const</span> { usuarioNome: nome, cidade, pais = <span class="highlight-string">'Brasil'</span> } = perfil;<br><br>
+                            <span class="highlight-comment">// Clonando e adicionando novas propriedades com Spread</span><br>
+                            <span class="highlight-keyword">const</span> perfilAtualizado = { ...perfil, profissao: <span class="highlight-string">'Engenheiro'</span> };
+                        </div>
+
+                        <button onclick="executarES6()" class="w-full bg-yellow-400 hover:bg-yellow-300 text-indigo-950 font-bold text-xs py-2 rounded transition">
+                            Executar Exemplo ES6+
+                        </button>
+                        <div id="output-es6" class="text-xs font-mono text-yellow-300 bg-black/40 p-3 rounded hidden"></div>
+                    </div>
+
+                    <!-- Encadeamento Opcional -->
+                    <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl space-y-2">
+                        <h4 class="font-bold text-slate-800 text-sm flex items-center gap-2">
+                            <i class="fa-solid fa-shield-halved text-emerald-600"></i> Encadeamento Opcional (`?.`)
+                        </h4>
+                        <p class="text-xs text-slate-600">
+                            Evita erros fatais de `TypeError: Cannot read properties of undefined` ao tentar acessar propriedades aninhadas que podem não existir.
+                        </p>
+                        <code class="block text-xs bg-slate-900 text-slate-200 p-2 rounded">const rua = cliente?.endereco?.rua; // Retorna undefined ao invés de quebrar a aplicação!</code>
+                    </div>
+                </div>
+            </section>
+
+            <!-- EXERCÍCIOS INTERATIVOS -->
+            <section id="exercicios" class="bg-white p-6 sm:p-8 rounded-2xl shadow-sm border border-slate-200 space-y-6">
+                <div>
+                    <span class="inline-block px-3 py-1 bg-yellow-100 text-yellow-800 text-xs font-semibold rounded-full uppercase tracking-wider mb-2">Prática Recomendada</span>
+                    <h2 class="text-2xl font-bold text-slate-900">6. Exercícios de Fixação</h2>
+                    <p class="text-slate-600 text-sm">Teste seus conhecimentos. Tente resolver mentalmente ou no editor e clique para verificar a solução.</p>
+                </div>
+
+                <div class="space-y-4">
+                    <!-- Exercício 1 -->
+                    <div class="border border-slate-200 rounded-xl p-4 bg-slate-50 space-y-2">
+                        <div class="flex justify-between items-center">
+                            <span class="font-bold text-sm text-slate-800">Exercício 1: Criar Objeto e Adicionar Método</span>
+                            <span class="text-xs bg-slate-200 px-2 py-0.5 rounded text-slate-700">Fácil</span>
+                        </div>
+                        <p class="text-xs text-slate-600">Crie um objeto chamado <code class="bg-slate-200 px-1 font-mono">livro</code> com as propriedades <code class="bg-slate-200 px-1 font-mono">titulo</code> e <code class="bg-slate-200 px-1 font-mono">autor</code>. Em seguida, adicione um método chamado <code class="bg-slate-200 px-1 font-mono">descrever()</code> que retorne uma string formatada com essas informações.</p>
+                        <details class="text-xs">
+                            <summary class="cursor-pointer text-amber-600 font-semibold hover:underline">Ver Solução</summary>
+                            <pre class="mt-2 p-3 bg-slate-900 text-slate-200 font-mono rounded overflow-x-auto">
+const livro = {
+  titulo: 'O Senhor dos Anéis',
+  autor: 'J.R.R. Tolkien',
+  descrever() {
+    return `O livro "${this.titulo}" foi escrito por ${this.autor}.`;
+  }
+};
+
+console.log(livro.descrever());</pre>
+                        </details>
+                    </div>
+
+                    <!-- Exercício 2 -->
+                    <div class="border border-slate-200 rounded-xl p-4 bg-slate-50 space-y-2">
+                        <div class="flex justify-between items-center">
+                            <span class="font-bold text-sm text-slate-800">Exercício 2: Somar valores das propriedades com Object.values()</span>
+                            <span class="text-xs bg-slate-200 px-2 py-0.5 rounded text-slate-700">Médio</span>
+                        </div>
+                        <p class="text-xs text-slate-600">Dado o objeto de despesas <code class="bg-slate-200 px-1 font-mono">{ aluguel: 1200, luz: 150, internet: 100 }</code>, calcule o total gasto utilizando <code class="text-amber-600 font-mono">Object.values()</code> e <code class="text-amber-600 font-mono">reduce()</code>.</p>
+                        <details class="text-xs">
+                            <summary class="cursor-pointer text-amber-600 font-semibold hover:underline">Ver Solução</summary>
+                            <pre class="mt-2 p-3 bg-slate-900 text-slate-200 font-mono rounded overflow-x-auto">
+const despesas = { aluguel: 1200, luz: 150, internet: 100 };
+
+const total = Object.values(despesas).reduce((acc, valor) => acc + valor, 0);
+
+console.log(`Total das despesas: R$ ${total}`); // Total das despesas: R$ 1450</pre>
+                        </details>
+                    </div>
+
+                    <!-- Exercício 3 -->
+                    <div class="border border-slate-200 rounded-xl p-4 bg-slate-50 space-y-2">
+                        <div class="flex justify-between items-center">
+                            <span class="font-bold text-sm text-slate-800">Exercício 3: Mesclar objetos mantendo a imutabilidade</span>
+                            <span class="text-xs bg-purple-100 text-purple-800 px-2 py-0.5 rounded font-medium">Intermediário</span>
+                        </div>
+                        <p class="text-xs text-slate-600">Dado dois objetos: <code class="bg-slate-200 px-1 font-mono">usuario</code> e <code class="bg-slate-200 px-1 font-mono">endereco</code>, mescle-os em um único objeto <code class="bg-slate-200 px-1 font-mono">clienteCompleto</code> usando o operador spread sem modificar os originais.</p>
+                        <details class="text-xs">
+                            <summary class="cursor-pointer text-amber-600 font-semibold hover:underline">Ver Solução</summary>
+                            <pre class="mt-2 p-3 bg-slate-900 text-slate-200 font-mono rounded overflow-x-auto">
+const usuario = { id: 1, nome: 'Mariana' };
+const endereco = { rua: 'Av. Paulista', cidade: 'São Paulo' };
+
+const clienteCompleto = { ...usuario, ...endereco };
+
+console.log(clienteCompleto);
+// { id: 1, nome: 'Mariana', rua: 'Av. Paulista', cidade: 'São Paulo' }</pre>
+                        </details>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-400 text-center py-6 text-sm border-t border-slate-800">
+        <p>Material Didático - JavaScript Moderno (ES6+)</p>
+    </footer>
+
+    <!-- Scripts de Interatividade -->
+    <script>
+        function executarCriacao() {
+            const carro = {
+                marca: 'Toyota',
+                modelo: 'Corolla',
+                ano: 2022,
+                cor: 'Prata'
+            };
+
+            carro.ligado = true;
+            const propriedadeBuscada = 'modelo';
+            const valorModelo = carro[propriedadeBuscada];
+            delete carro.cor;
+
+            const resultado = [
+                `Objeto Carro Final: ${JSON.stringify(carro, null, 2)}`,
+                `Acesso via Colchetes [${propriedadeBuscada}]: "${valorModelo}"`,
+                `Propriedade 'cor' foi removida? ${carro.cor === undefined}`
+            ].join('\n\n');
+
+            document.getElementById('output-criacao').innerText = resultado;
+        }
+
+        function executarMetodos() {
+            const contaBancaria = {
+                titular: 'Ana Silva',
+                saldo: 500,
+
+                depositar(valor) {
+                    this.saldo += valor;
+                    return `Depósito de R$${valor} realizado! Novo saldo: R$${this.saldo}`;
+                },
+
+                exibirResumo() {
+                    return `Titular: ${this.titular} | Saldo Atual: R$${this.saldo}`;
+                }
+            };
+
+            const log1 = contaBancaria.exibirResumo();
+            const log2 = contaBancaria.depositar(250);
+            const log3 = contaBancaria.exibirResumo();
+
+            document.getElementById('output-metodos').innerText = `${log1}\n${log2}\n${log3}`;
+        }
+
+        function executarUtilitarios() {
+            const usuario = { id: 101, nome: 'Carlos', cargo: 'Dev' };
+
+            const chaves = Object.keys(usuario);
+            const valores = Object.values(usuario);
+            const pares = Object.entries(usuario);
+
+            const configuracao = Object.freeze({ tema: 'escuro' });
+            configuracao.tema = 'claro'; // Não altera devido ao freeze
+
+            const resultado = [
+                `Chaves (Object.keys): ${JSON.stringify(chaves)}`,
+                `Valores (Object.values): ${JSON.stringify(valores)}`,
+                `Pares (Object.entries): ${JSON.stringify(pares)}`,
+                `Tentativa de alterar 'tema' num congelado: ${configuracao.tema}`
+            ].join('\n\n');
+
+            document.getElementById('output-utilitarios').innerText = resultado;
+        }
+
+        function executarES6() {
+            const perfil = { usuarioNome: 'Lucas', idade: 28, cidade: 'São Paulo' };
+
+            const { usuarioNome: nome, cidade, pais = 'Brasil' } = perfil;
+            const perfilAtualizado = { ...perfil, profissao: 'Engenheiro' };
+
+            const elem = document.getElementById('output-es6');
+            elem.classList.remove('hidden');
+            elem.innerText = [
+                `Variáveis extraídas por desestruturação:`,
+                ` - nome: "${nome}"`,
+                ` - cidade: "${cidade}"`,
+                ` - pais (valor padrão): "${pais}"`,
+                ``,
+                `Novo Objeto gerado via Spread:`,
+                JSON.stringify(perfilAtualizado, null, 2)
+            ].join('\n');
+        }
+    </script>
+</body>
+</html>
