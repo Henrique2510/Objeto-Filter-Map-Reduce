@@ -10,16 +10,40 @@
 
 // console.log(livro.descrever())
 
-
+// ------------------------------------------------------------------------------------------------------------------
 
 // Exercício 2: Somar valores das propriedades com Object.values()
 
 // const despesas = {
 //     aluguel: 1200,
 //     luz: 150,
-//     internet:100
+//     internet: 100
 // }
 
 // console.log(`${Object.values(despesas)}`)
 
-// console.log(``)
+// let total = Object.values(despesas).reduce((acc, gastos) => {
+//     return acc + gastos;
+// }, 0)
+
+// console.log(`${total}`)
+
+// ------------------------------------------------------------------------------------------------------------------
+
+// Exercício 3: Mesclar objetos mantendo a imutabilidade
+
+// const usuario = {
+//     nome: "Henrique"
+// }
+
+// const endereco = {
+//     rua: "legal",
+//     numero: 1234
+// }
+
+// const clienteCompleto = {
+//     ...usuario,
+//     ...endereco
+// }
+
+// console.log(clienteCompleto)
